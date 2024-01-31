@@ -23,6 +23,10 @@ const shopSchema = new mongoose.Schema(
     phone: {
       type: Number,
     },
+    ratings: {
+      type: Number,
+      default: 0,
+    },
     role: {
       type: String,
       default: "seller",

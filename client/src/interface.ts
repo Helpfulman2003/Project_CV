@@ -43,6 +43,7 @@ export interface currentShop {
   email: string;
   name: string;
   password?: string;
+  ratings?: number;
   role?: string;
   _id?: string;
   zipCode: number;
@@ -218,7 +219,7 @@ interface allOrderUserState {
 export interface messageState {
   _id?: string;
   message: string;
-  user?: [],
+  user?: [];
   senderId: string;
   createdAt?: Date;
 }
@@ -234,5 +235,5 @@ export interface rootState {
   allCouponCode: couponCodeState;
   allOrder: allOrderState;
   allOrderUser: allOrderUserState;
-  allEventOfShop: allEventOfShopState
+  allEventOfShop: allEventOfShopState;
 }

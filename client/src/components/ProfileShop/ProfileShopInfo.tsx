@@ -31,6 +31,9 @@ const ProfileShopInfo = ({ currentShop }: IProps) => {
         return total
     }, [currentShop._id, currentProduct])
 
+    console.log(currentShop);
+    
+
     const handleOk = async () => {
         try {
           const axiosJWT = createAxios(currentShop, dispatch, logOutSuccess)
@@ -72,7 +75,7 @@ const ProfileShopInfo = ({ currentShop }: IProps) => {
                 </div>
                 <div className='mt-4'>
                     <h2 className='text-gray-800 font-medium'>Shop Ratings</h2>
-                    <h4 className='text-[#555]'>4/5</h4>
+                    <h4 className='text-[#555]'>{currentShop?.ratings ?? 0}/5</h4>
                 </div>
 
                 <div className='w-full shadow bg-gradient-to-r mt-4 from-green-300 via-green-400 to-green-500 text-center px-4 py-3 rounded-md'>

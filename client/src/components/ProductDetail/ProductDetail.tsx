@@ -116,7 +116,7 @@ const ProductDetail = () => {
                             </div>
                             <div>
                                 <p className='text-[#6cb0fb]'>{getProduct?.shopId?.name}</p>
-                                <p>({4}) rating</p>
+                                <p>({getProduct?.shopId?.ratings ?? 0}) rating</p>
                             </div>
                         </div>
                         <div className='w-[150px] bg-green-500 text-center px-4 py-3 rounded-md my-3'>

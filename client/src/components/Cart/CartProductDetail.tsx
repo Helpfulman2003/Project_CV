@@ -50,7 +50,7 @@ const CartProductDetail = ({ data, setOpen }: IProps) => {
                         </div>
                         <div>
                             <p className='text-[#6cb0fb]'>{data.shopId?.name}</p>
-                            <p>(4) rating</p>
+                            <p>({data.shopId?.ratings ?? 0}) rating</p>
                         </div>
                     </div>
                     <div className='w-[150px] bg-green-500 text-center px-4 py-3 rounded-md my-3'>

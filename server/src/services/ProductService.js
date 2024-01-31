@@ -23,7 +23,15 @@ const productService = {
     };
   },
   getAllProductOfShop: async (shopId, next) => {
-    const products = await Product.find({ shopId: { $eq: shopId } }).populate("shopId");
+    const products = await Product.find({ shopId: { $eq: shopId } }).populate(
+      "shopId"
+    );
+    const shop = await Shop.findById({ _id: shopId });
+    const total = products.reduce((acc, product) => acc + (isNaN(product?.ratings) ? 0 : product?.ratings), 0);
+    if (shop) {
+      shop.ratings = products.length > 0 ? Number((total / products.length).toFixed(2)) : 0;
+      await shop.save();
+    }
     return {
       products,
     };
@@ -51,8 +59,8 @@ const productService = {
       .populate("shopId")
       .populate({
         path: "reviews",
-        populate: {path: 'userId'}
-      })
+        populate: { path: "userId" },
+      });
     return {
       products,
     };
@@ -60,7 +68,9 @@ const productService = {
   productReview: async (body, userId, next) => {
     const { rating, comment, productId } = body;
     const product = await Product.findById({ _id: productId });
-    const isReview = product.reviews?.find((review) => review.userId.toString() === userId);
+    const isReview = product.reviews?.find(
+      (review) => review.userId.toString() === userId
+    );
     if (isReview) {
       product.reviews = product.reviews.map((review) => {
         if (review.userId.toString() === userId) {
@@ -75,12 +85,12 @@ const productService = {
     product.reviews.forEach((review) => (avg += review.rating));
     product.ratings = (avg / product.reviews.length).toFixed(1);
     await product.save();
+
     return {
       success: true,
       message: "Review successfully!",
     };
-  }
-,
+  },
 };
 
 module.exports = productService;
