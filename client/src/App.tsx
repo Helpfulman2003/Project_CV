@@ -19,6 +19,7 @@ import PaymentPage from './Pages/PaymentPage.tsx';
 import OrderSuccessPage from './Pages/OrderSuccessPage.tsx';
 import ShopOrderDetailPage from './Pages/ShopOrderDetailPage.tsx';
 import UserOrderDetailPage from './Pages/UserOrderDetailPage.tsx';
+import UserInboxPage from './Pages/UserInboxPage.tsx';
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
         <Route path='/shop-login' element={<ShopLoginPage/>}/>
         <Route path='/order/:id' element={<ShopOrderDetailPage/>}/>
         <Route path='/profile/order/:id' element={<UserOrderDetailPage/>}/>
+        <Route path='/inbox' element={<UserInboxPage/>}/>
       </Routes>
     </BrowserRouter>
   );

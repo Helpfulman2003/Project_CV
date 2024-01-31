@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 const Navbar = ({flat = 1}) => {
   
   return (
-    <div className='w-full px-[10%] flex items-center justify-between mt-9'>
+    <div className='lg:flex hidden w-full px-[10%] items-center justify-between m-0 md:mt-9'>
         <div className='w-[270px] flex items-center justify-between shadow-md px-3 py-2'>
             <div>
                 <CiViewList />

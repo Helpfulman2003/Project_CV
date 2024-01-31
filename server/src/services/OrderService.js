@@ -38,7 +38,7 @@ const orderService = {
       const valueObject = Object.values(order.cart).flat();
       for (const item of valueObject) {
         await Product.findByIdAndUpdate(
-          {_id: item._id},
+          { _id: item._id },
           { $inc: { stock: -item.quantity, sold_out: item.quantity } },
           { new: true }
         );
@@ -48,10 +48,15 @@ const orderService = {
     if (status === "Delivered") {
       order.deliveredAt = new Date();
       order.paymentInfo.status = "Success";
-      const serviceCharge = (order.totalPrice * 0.1).toFixed(2);
+      const totalPrice = (
+        order?.cart[shopId].reduce((acc, item) => {
+          let quantity = item.quantity ?? 0;
+          return acc + quantity * item?.discountPrice;
+        }, 0)).toFixed(2);
+      const serviceCharge = totalPrice * 0.1;
       await Shop.findByIdAndUpdate(
-        {_id: shopId},
-        { $inc: { availableBalancer: serviceCharge } },
+        { _id: shopId },
+        { $inc: { availableBalancer: totalPrice - serviceCharge }},
         { new: true }
       );
     }
@@ -62,10 +67,10 @@ const orderService = {
       order,
     };
   },
-  getAllOrderOfUser: async(userId, next) => {
-    const orders = await Order.find()
+  getAllOrderOfUser: async (userId, next) => {
+    const orders = await Order.find();
     const orderUser = orders.map((item) => {
-      if(item.user._id === userId) {
+      if (item.user._id === userId) {
         return {
           cart: Object.values(item.cart).flat(),
           _id: item._id,
@@ -75,14 +80,14 @@ const orderService = {
           paidAt: item.paidAt,
           deliveredAt: item.deliveredAt,
           createdAt: item.createdAt,
-          shippingAddress: item.shippingAddress
-        }
+          shippingAddress: item.shippingAddress,
+        };
       }
-    })
+    });
     return {
-      orderUser
-    }
-  }
+      orderUser,
+    };
+  },
 };
 
 module.exports = orderService;

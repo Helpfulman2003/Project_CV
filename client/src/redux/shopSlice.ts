@@ -24,12 +24,17 @@ export const shopSlice = createSlice({
     loginError: (state) => {
       state.shop.isFetching = false
       state.shop.error = true
+    },
+    logOutSuccess: (state) => {
+      state.shop.isFetching = false
+      state.shop.currentShop = {}
+      state.shop.error = false
     }
   }
 });
 
 // Export action ra để sử dụng cho tiện.
-export const { loginStart, loginSuccess, loginError } = shopSlice.actions;
+export const { loginStart, loginSuccess, loginError, logOutSuccess } = shopSlice.actions;
 
 // Export reducer để nhúng vào Store
 export default shopSlice.reducer;

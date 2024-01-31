@@ -2,28 +2,35 @@
 import React, { useMemo, useRef, useState } from 'react'
 import { FaHeart, FaRegHeart } from 'react-icons/fa6'
 import { IoCartOutline } from 'react-icons/io5'
-import { Link, useParams } from 'react-router-dom'
+import {  useParams } from 'react-router-dom'
 import { AiOutlineMessage } from 'react-icons/ai'
 import ProductDetailInfo from './ProductDetailInfo.tsx'
 import RelativeProduct from './RelativeProduct.tsx'
 import { useDispatch, useSelector } from 'react-redux'
 import { currentProduct, rootState } from '../../interface.ts'
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { addToCart } from '../../redux/cartSlice.ts'
+import { addToWishList } from '../../redux/wishListSlice.ts'
 
 const ProductDetail = () => {
-    const [selected, setSelected] = useState<boolean>(false)
     const [value, setValue] = useState<number>(1)
     const { currentProduct } = useSelector((state: rootState) => state.allProduct.allProduct)
+    const wishList = useSelector((state: rootState) => state.wishList.wishList)
     const cart = useSelector((state: rootState) => state.cart.cart)
     const dispatch = useDispatch()
     const { id } = useParams<string>()
     const ref = useRef<HTMLImageElement>(null)
+    const navigate = useNavigate()
 
     const getProduct = useMemo(() => {
         const product = currentProduct.find((item) => item._id === id)
         return product
     }, [id])
+
+    const handleAddToWishList = () => {
+        dispatch(addToWishList(getProduct))
+      }
 
     const handleBtn = (value: string) => {
         switch (value) {
@@ -57,11 +64,17 @@ const ProductDetail = () => {
         }
     }
 
+    const handleRedirect = () => {
+        const shop = getProduct?.shopId
+        localStorage.setItem('shop', JSON.stringify(shop))
+        navigate('/inbox')
+    }
+
 
     return (
         <div className='px-[10%] w-full mt-5'>
-            <div className='flex items-start justify-start gap-3 mb-5 gap-x-4'>
-                <div className='w-[50%]'>
+            <div className='block md:flex items-start justify-start gap-3 mb-5 gap-x-4'>
+                <div className='md:w-[50%] w-full'>
                     <div>
                         <img ref={ref} src={getProduct?.images?.url[0].url} alt="" className='w-[100%] object-cover' />
                     </div>
@@ -74,7 +87,7 @@ const ProductDetail = () => {
                         }
                     </div>
                 </div>
-                <div className='w-[50%]'>
+                <div className='md:w-[50%] w-full'>
                     <h2 className='text-[20px] font-bold text-[#333]'>{getProduct?.name}</h2>
                     <p className='text-[#333] h-[112px]'>{getProduct?.description}</p>
                     <div className='flex items-center justify-start gap-4 mt-3'>
@@ -89,7 +102,7 @@ const ProductDetail = () => {
                         </div>
                         <div>
                             {
-                                selected ? (<FaHeart size={20} className='mr-3 text-red-500' onClick={() => setSelected(!selected)} />) : (<FaRegHeart size={20} className='mr-3' onClick={() => setSelected(!selected)} />)
+                                wishList && wishList.find((item) => item._id === getProduct?._id) ? (<FaHeart size={20} className='mr-3 text-red-500'/>) : (<FaRegHeart size={20} className='mr-3' onClick={handleAddToWishList} />)
                             }
                         </div>
                     </div>
@@ -107,7 +120,7 @@ const ProductDetail = () => {
                             </div>
                         </div>
                         <div className='w-[150px] bg-green-500 text-center px-4 py-3 rounded-md my-3'>
-                            <Link to=""><button className='text-white font-bold text-[12px] flex items-center justify-center gap-1'>Send Message <AiOutlineMessage size={16} /></button></Link>
+                            <button onClick={handleRedirect} className='text-white font-bold text-[12px] flex items-center justify-center gap-1'>Send Message <AiOutlineMessage size={16} /></button>
                         </div>
                         <div className='mt-4 text-green-600 translate-y-[-8px]'>
                             <span>({getProduct?.sold_out}) Sold out</span>

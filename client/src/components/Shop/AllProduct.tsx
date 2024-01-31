@@ -117,8 +117,8 @@ const AllProduct = () => {
   // ];
 
   return (
-    <div>
-      <Table columns={columns} dataSource={currentProduct} style={{ width: '100%' }} scroll={{ x: 900 }} />
+    <div className='w-[100%]'>
+      <Table columns={columns} dataSource={currentProduct} className='lg:w-[100%] md:w-[600px] sm:w-[500px] w-[400px]' scroll={{ x: 900 }} />
       <Modal
         title="Confirmed deletion"
         open={isModalOpen}
@@ -141,8 +141,6 @@ const AllProduct = () => {
       >
         <p>Are you sure you want to delete this item? This action cannot be undone.</p>
       </Modal>
-
-
     </div>
   )
 }

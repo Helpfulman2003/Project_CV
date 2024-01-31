@@ -8,6 +8,8 @@ import { createNewOrder } from '../../router/userRouter.ts'
 import { useNavigate } from 'react-router-dom'
 import { toast, ToastContainer } from 'react-toastify'
 import { clearCart } from '../../redux/cartSlice.ts'
+import { CardNumberElement, CardCvcElement, CardExpiryElement, Elements, useStripe, useElements } from '@stripe/react-stripe-js'
+import { loadStripe } from '@stripe/stripe-js';
 
 interface orderData {
   cart: currentProduct[];
@@ -28,6 +30,8 @@ export interface shippingAddress {
   address: string;
 }
 
+const stripeTestPromise = loadStripe('pk_test_51OXztXCqeTGxAfHzxaOfbfFN6meyMfVHdHWnOX3775raCmhq3WbCkgGQyU8iGT6bHkv11pSnwiHcxQXfv15gjTsH00ShCi9KbK')
+
 const Payment = () => {
   // const cart = useSelector((state: rootState) => state.cart.cart)
   const { currentUser } = useSelector((state: rootState) => state.user.user)
@@ -36,6 +40,9 @@ const Payment = () => {
   const [select, setSelect] = useState<number>(0)
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  // const stripe = useStripe()
+  // const elements = useElements()
+
 
   useEffect(() => {
     const latestOrder = localStorage.getItem('latestOrder')
@@ -44,7 +51,7 @@ const Payment = () => {
   }, [])
 
   const groupByShop = (cart) => {
-    return cart.reduce((groupedItems, item) => {
+    return cart && cart.reduce((groupedItems, item) => {
       const shopId = item.shopId._id;
       if (!groupedItems[shopId]) {
         groupedItems[shopId] = [];
@@ -69,12 +76,59 @@ const Payment = () => {
       const { data } = await axios.post(createNewOrder, order)
       navigate("/order/success");
       dispatch(clearCart())
-      localStorage.setItem('latestOrder', JSON.stringify('{}'))
+      localStorage.setItem('latestOrder', JSON.stringify(''))
     } catch (error) {
       toast.error('Order error')
     }
-
   }
+
+  // const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  //   event.preventDefault()
+  //   const cardElement = elements?.getElement(CardNumberElement);
+  //   if (!cardElement) {
+  //     return;
+  //   }
+  //   const { error, paymentMethod } = await stripe!.createPaymentMethod({
+  //     type: 'card',
+  //     card: cardElement,
+  //   });
+  //   if (!error) {
+  //     try {
+  //       const { id } = paymentMethod
+  //       const response = await axios.post("'http://localhost:3001/payment", {
+  //         amount: orderData?.totalPrice,
+  //         id
+  //       })
+
+  //       if (response.data.success) {
+  //         const order = {
+  //           cart: groupByShop(orderData?.cart),
+  //           shippingAddress: orderData?.shippingAddress,
+  //           user: orderData?.user,
+  //           totalPrice: orderData?.totalPrice,
+  //           paymentInfo: {
+  //             id: id,
+  //             // status: status,
+  //             type: "Credit Card",
+  //           }
+  //         };
+  //         try {
+  //           const { data } = await axios.post(createNewOrder, order)
+  //           navigate("/order/success");
+  //           dispatch(clearCart())
+  //           localStorage.setItem('latestOrder', JSON.stringify(''))
+  //         } catch (error) {
+  //           toast.error('Order error')
+  //         }
+  //       }
+  //     } catch (error) {
+  //       console.log("Error", error)
+  //     }
+  //   } else {
+  //     console.log(error.message)
+  //   }
+  // }
+
   return (
     <>
       <div className='flex items-start justify-between'>
@@ -97,86 +151,85 @@ const Payment = () => {
             {/* pay with card */}
             {select === 1 ? (
               <div className="w-full flex border-b">
-                <form className="w-full">
-                  <div className="w-full flex pb-3">
-                    <div className="w-[50%]">
-                      <label className="block pb-2">Name On Card</label>
-                      <input
-                        required
-                        placeholder={currentUser && currentUser.name}
-                        value={currentUser && currentUser.name}
-                      />
-                    </div>
-                    <div className="w-[50%]">
-                      <label className="block pb-2">Exp Date</label>
-                      {/* <CardExpiryElement
-                        className={`${styles.input}`}
-                        options={{
-                          style: {
-                            base: {
-                              fontSize: "19px",
-                              lineHeight: 1.5,
-                              color: "#444",
-                            },
-                            empty: {
-                              color: "#3a120a",
-                              backgroundColor: "transparent",
-                              "::placeholder": {
+                <form className="w-full" /*onSubmit={handleSubmit}*/>
+                  <Elements stripe={stripeTestPromise}>
+                    <div className="w-full flex pb-3">
+                      <div className="w-[50%]">
+                        <label className="block pb-2">Name On Card</label>
+                        <input
+                          required
+                          placeholder={currentUser && currentUser.name}
+                          value={currentUser && currentUser.name}
+                        />
+                      </div>
+                      <div className="w-[50%]">
+                        <label className="block pb-2">Exp Date</label>
+                        <CardExpiryElement
+                          className={`border p-1 rounded-[5px]`}
+                          options={{
+                            style: {
+                              base: {
+                                fontSize: "16px",
                                 color: "#444",
                               },
+                              empty: {
+                                color: "#3a120a",
+                                backgroundColor: "transparent",
+                                "::placeholder": {
+                                  color: "#444",
+                                },
+                              },
                             },
-                          },
-                        }}
-                      /> */}
+                          }}
+                        />
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="w-full flex pb-3">
-                    <div className="w-[50%]">
-                      <label className="block pb-2">Card Number</label>
-                      {/* <CardNumberElement
-                        className={`${styles.input} !h-[35px] !w-[95%]`}
-                        options={{
-                          style: {
-                            base: {
-                              fontSize: "19px",
-                              lineHeight: 1.5,
-                              color: "#444",
-                            },
-                            empty: {
-                              color: "#3a120a",
-                              backgroundColor: "transparent",
-                              "::placeholder": {
+                    <div className="w-full flex pb-3">
+                      <div className="w-[50%]">
+                        <label className="block pb-2">Card Number</label>
+                        <CardNumberElement
+                          className={`!h-[35px] !w-[95%] border p-1 rounded-[5px]`}
+                          options={{
+                            style: {
+                              base: {
+                                fontSize: "16px",
                                 color: "#444",
                               },
-                            },
-                          },
-                        }}
-                      /> */}
-                    </div>
-                    <div className="w-[50%]">
-                      <label className="block pb-2">CVV</label>
-                      {/* <CardCvcElement
-                        className={`${styles.input} !h-[35px]`}
-                        options={{
-                          style: {
-                            base: {
-                              fontSize: "19px",
-                              lineHeight: 1.5,
-                              color: "#444",
-                            },
-                            empty: {
-                              color: "#3a120a",
-                              backgroundColor: "transparent",
-                              "::placeholder": {
-                                color: "#444",
+                              empty: {
+                                color: "#3a120a",
+                                backgroundColor: "transparent",
+                                "::placeholder": {
+                                  color: "#444",
+                                },
                               },
                             },
-                          },
-                        }}
-                      /> */}
+                          }}
+                        />
+                      </div>
+                      <div className="w-[50%]">
+                        <label className="block pb-2">CVV</label>
+                        <CardCvcElement
+                          className={`!h-[35px] border p-1 rounded-[5px]`}
+                          options={{
+                            style: {
+                              base: {
+                                fontSize: "19px",
+                                color: "#444",
+                              },
+                              empty: {
+                                color: "#3a120a",
+                                backgroundColor: "transparent",
+                                "::placeholder": {
+                                  color: "#444",
+                                },
+                              },
+                            },
+                          }}
+                        />
+                      </div>
                     </div>
-                  </div>
+                  </Elements>
                   <input
                     type="submit"
                     value="Submit"

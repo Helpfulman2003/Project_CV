@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '../../redux/cartSlice.ts';
 import { toast } from 'react-toastify';
 import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
+import { addToWishList } from '../../redux/wishListSlice.ts';
 
 interface IProps {
   product: currentProduct
@@ -18,9 +19,9 @@ interface IProps {
 
 const CartProduct = (props: IProps) => {
   const { product } = props
-  const [selected, setSelected] = useState<Boolean>(false)
   const [open, setOpen] = useState<Boolean>(false)
   const cart = useSelector((state: rootState) => state.cart.cart)
+  const wishList = useSelector((state: rootState) => state.wishList.wishList)
   const dispatch = useDispatch()
 
   const handleAddToCart = (id) => {
@@ -37,54 +38,57 @@ const CartProduct = (props: IProps) => {
     }
   };
   
+  const handleAddToWishList = () => {
+    dispatch(addToWishList(product))
+  }
 
   return (
     <div className='mt-[10px]'>
-      <div className='bg-white rounded-md px-3 shadow-md py-4 relative'>
+      <div className='bg-white rounded-md px-3 min-w-[182px] shadow-md py-4 relative'>
         <Link to={`/product/${product._id}`}>
           <div>
-            <img src={product.images?.url[0].url} alt="product" className='w-[200px] h-[150px] object-cover'/>
+            {product.images && product.images?.url && product.images?.url.length > 0 ? (<img src={product.images?.url[0]?.url} alt="product" className='lg:w-[200px] w-full h-[170px] object-cover' />) : <img src={''} alt="product" className='w-[200px] h-[150px] object-cover' />}
           </div>
         </Link>
         <h3 className='text-blue-400 text-[14px] font-[400] mt-4'>{product.shopId?.name}</h3>
         <p className='font-bold mt-3 h-12'>{product.name.length > 35 ? product.name.slice(0, 35) + "..." : product.name}</p>
         <div>
-        <div className='flex justify-start items-end'>
-                                        {
-                                        [1, 2, 3, 4, 5].map(i => {
-                                            return (
-                                                product.ratings >= i ? (
-                                                    <AiFillStar
-                                                        key={i}
-                                                        className="mr-1 cursor-pointer"
-                                                        color="rgb(246,186,0)"
-                                                        size={20}
-                                                      
-                                                    />
-                                                ) : (
-                                                    <AiOutlineStar
-                                                        key={i}
-                                                        className="mr-1 cursor-pointer"
-                                                        color="rgb(246,186,0)"
-                                                        size={20}
-                                                        
-                                                    />
-                                                )
-                                            )
-                                        })
-                                    }
-                                    </div>
+          <div className='flex justify-start items-end'>
+            {
+              [1, 2, 3, 4, 5].map(i => {
+                return (
+                  product.ratings >= i ? (
+                    <AiFillStar
+                      key={i}
+                      className="mr-1 cursor-pointer"
+                      color="rgb(246,186,0)"
+                      size={20}
+
+                    />
+                  ) : (
+                    <AiOutlineStar
+                      key={i}
+                      className="mr-1 cursor-pointer"
+                      color="rgb(246,186,0)"
+                      size={20}
+
+                    />
+                  )
+                )
+              })
+            }
+          </div>
         </div>
         <div className='mt-4 flex items-center justify-between'>
           <span className='text-[14px] font-semibold'>{product.discountPrice === 0 ? product.originalPrice : product.discountPrice}VND</span>
-          <span className='text-[14px] text-red-500 font-[500] translate-y-[-8px] line-through'>{product.originalPrice ? product.originalPrice + "VND" : null}</span>
+          <span className='text-[14px] text-red-500 font-[500] md:translate-x-0 translate-x-[-100%] translate-y-[-8px] line-through'>{product.originalPrice ? product.originalPrice + "VND" : null}</span>
           <span className='text-[14px] text-[#4fa56f]'>{product.sold_out} sold</span>
         </div>
 
         <div className='absolute top-5 right-2 flex flex-col justify-center gap-2'>
           <div>
             {
-              selected ? (<FaHeart size={20} color='#d55b45' className='cursor-pointer' onClick={() => { setSelected(!selected) }} />) : (<FaRegHeart size={20} color='#484848' className='cursor-pointer' /*onClick={() => { setSelected(!selected) }}*/ />)
+              wishList && wishList.find((item) => item._id === product._id) ? (<FaHeart size={20} color='#d55b45' className='cursor-pointer'/>) : (<FaRegHeart size={20} color='#484848' className='cursor-pointer' onClick={handleAddToWishList} />)
             }
           </div>
           <div>

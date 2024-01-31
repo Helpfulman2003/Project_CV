@@ -30,7 +30,7 @@ const ShopLoginPage = () => {
           .required("Required!"),
   
       }),
-      onSubmit: async (values) => {
+      onSubmit: async (values) => {   
         try {
           const { data } = await axios.post(shopLoginRoute, values);
           dispatch(loginSuccess(data.shop));
@@ -69,7 +69,7 @@ const ShopLoginPage = () => {
           <button className='text-white font-bold w-full bg-green-500 text-center px-3 py-2 rounded-md' type='submit'>Submit</button>
           <div className='flex justify-center items-center gap-2'>
             <p>Not have any account?</p>
-            <Link to='/register' className='text-green-500'>Register</Link>
+            <Link to='/shop-create' className='text-green-500'>Register</Link>
           </div>
         </form>
       </div>

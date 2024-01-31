@@ -4,15 +4,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { currentEvent, rootState } from '../../interface.ts';
 import { createAxios } from '../../createIntance.ts';
 import { loginSuccess } from '../../redux/shopSlice.ts';
-import { getEventSuccess } from '../../redux/allEventSlice.ts';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { Modal } from 'antd';
 import { Space, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { deleteEventOfShop } from '../../router/userRouter.ts';
+import { getEventOfShopSuccess } from '../../redux/allEventOfShopSlice.ts';
 
 const AllEvent = () => {
-  const { currentEvent } = useSelector((state: rootState) => state.allEvent.allEvent)
+  const { currentEventOfShop } = useSelector((state: rootState) => state.allEventOfShop.allEventOfShop)
   const { currentShop } = useSelector((state: rootState) => state.shop.shop)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [eventId, setEventId] = useState<string | undefined>('')
@@ -21,8 +21,8 @@ const AllEvent = () => {
   const axiosJWT = createAxios(currentShop, dispatch, loginSuccess)
 
   const handleOk = async () => {
-    const listEvent = currentEvent.filter((event: currentEvent) => event._id !== eventId)
-    dispatch(getEventSuccess(listEvent))
+    const listEvent = currentEventOfShop.filter((event: currentEvent) => event._id !== eventId)
+    dispatch(getEventOfShopSuccess(listEvent))
     setIsModalOpen(false);
     try {
       const { data } = await axiosJWT.delete(`${deleteEventOfShop}/${eventId}`)
@@ -84,8 +84,8 @@ const AllEvent = () => {
     },
   ];
   return (
-    <div>
-      <Table columns={columns} dataSource={currentEvent} style={{ width: '100%' }} scroll={{ x: 900 }} />
+    <div className='w-[90%]'>
+      <Table columns={columns} dataSource={currentEventOfShop} style={{ width: '100%' }} scroll={{ x: 900 }} />
       <Modal
         title="Confirmed deletion"
         open={isModalOpen}

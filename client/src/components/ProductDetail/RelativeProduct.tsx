@@ -17,8 +17,8 @@ const RelativeProduct = ({getProduct}: IProps) => {
     
   return (
     <div className='mb-12'>
-            <h1 className='text-[28px] font-bold border-b border-solid border-gray-200 pb-5 mb-5'>Relative Product</h1>
-            <div className='grid grid-cols-5 gap-7'>
+            <h1 className='md:text-left text-center text-[28px] font-bold border-b border-solid border-gray-200 pb-5 mb-5'>Relative Product</h1>
+            <div className='md:grid md:grid-cols-2 lg:grid-cols-5 gap-7'>
                 {
                     relativeProduct.map((product, index) => {
                         return <CartProduct key={index} product={product}/>

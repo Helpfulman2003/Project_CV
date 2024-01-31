@@ -11,7 +11,7 @@ const Sponsor = () => {
       ];
   return (
     <div className='w-full px-[10%] mt-14 mb-12'>
-        <div className='grid grid-cols-5 gap-16 bg-white shadow-md rounded-md px-4 py-10 cursor-pointer'>
+        <div className='hidden md:grid grid-cols-5 gap-16 bg-white shadow-md rounded-md px-4 py-10 cursor-pointer'>
             {
                 sponsors.map((sponsor: string, index: number) => {
                     return (

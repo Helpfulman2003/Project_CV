@@ -8,7 +8,7 @@ const ProfilePage = () => {
   return (
     <div className='bg-[#f6f6f5]'>
         <Header/>
-        <div className='px-[10%] my-10 h-full grid grid-cols-4 gap-5'>
+        <div className='px-[10%] my-10 h-full grid grid-cols-4 md:gap-5 gap-0'>
             <ProfileSidebar show={show} setShow={setShow}/>
             <ProfileContent show={show}/>
         </div>

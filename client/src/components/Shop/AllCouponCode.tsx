@@ -1,17 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Modal, Space, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { RxCross1 } from 'react-icons/rx';
 import { useDispatch, useSelector } from 'react-redux';
-import { currentCouponCode, currentEvent, rootState } from '../../interface.ts';
+import { currentCouponCode, rootState } from '../../interface.ts';
 import { loginSuccess } from '../../redux/shopSlice.ts';
 import { getCouponCodeSuccess } from '../../redux/allCouponCodeSlice.ts'
 import { createAxios } from '../../createIntance.ts';
 import { useFormik } from 'formik';
 import { toast, ToastContainer } from 'react-toastify';
-import { createCouponRoute, deleteCouponCodeOfShop } from '../../router/userRouter.ts';
+import { createCouponRoute, deleteCouponCodeOfShop, getCouponOfShopRoute } from '../../router/userRouter.ts';
+import { useNavigate } from 'react-router-dom';
 
 const AllCouponCode = () => {
     const [open, setOpen] = useState(false)
@@ -21,8 +22,27 @@ const AllCouponCode = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [couponCodeId, setCouponCodeId] = useState<string | undefined>('')
     const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     const axiosJWT = createAxios(currentShop, dispatch, loginSuccess)
+
+    useEffect(() => {
+        const fetchData = async () => {
+          try {
+            const { data } = await axiosJWT.get(getCouponOfShopRoute)
+            if (data && data.coupons) {
+              dispatch(getCouponCodeSuccess(data.coupons))
+            } else {
+              throw new Error("No products found")
+            }
+          } catch (error) {
+            if (error.response.data.message === 'jwt expired') {
+              navigate('/shop-login')
+            }
+          }
+        }
+        fetchData()
+      }, [dispatch])
 
     const formik = useFormik({
         initialValues: {
@@ -136,7 +156,7 @@ const AllCouponCode = () => {
         },
     ];
     return (
-        <div className="w-full mx-8 pt-1  bg-white">
+        <div className="w-[90%] pt-1  bg-white">
             <div className="w-full flex justify-end">
                 <div onClick={() => setOpen(true)} className='w-[150px] shadow bg-gradient-to-r from-green-300 via-green-400 to-green-500 text-center px-3 py-4 text-[12px] cursor-pointer rounded-md mb-3'>
                     <button className='text-white font-bold'>Create Coupon Code</button>

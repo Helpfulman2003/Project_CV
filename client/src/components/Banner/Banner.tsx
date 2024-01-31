@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom'
 
 const Banner = () => {
     return (
-        <div className="bg-[url('https://themes.rslahmed.dev/rafcart/assets/images/banner-2.jpg')] w-full h-full z-10 px-[10%] mt-6 pt-8 pb-24 bg-center bg-cover">
+        <div className="bg-[url('https://themes.rslahmed.dev/rafcart/assets/images/banner-2.jpg')] w-full h-full z-10 px-[10%] mt-0 lg:mt-6 pt-8 pb-24 bg-center bg-cover">
             <div className='flex flex-col justify-center gap-6'>
-                <h1 className='text-[36px] font-bold text-[#3d3a3a] w-[50%]'>Best Collection For Home Decoration</h1>
+                <h1 className='md:text-[36px] text-[30px] font-bold text-[#3d3a3a] w-[50%]'>Best Collection For Home Decoration</h1>
                 <p className='text-[16px] text-[#3d3a3a] w-[50%]'>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Beatae, assumenda? Quisquam itaque
                     exercitationem labore vel, dolore quidem asperiores, laudantium temporibus soluta optio consequatur
                     aliquam deserunt officia. Dolorum saepe nulla provident.

@@ -18,6 +18,9 @@ const ProfileContentOrder = () => {
           dataIndex: '_id',
           key: '_id',
           width: '100',
+          render: (_id: string) => {
+            return _id.substring(0, 10)+'...'
+          }
       },
       {
           title: 'Total Price',
@@ -41,11 +44,11 @@ const ProfileContentOrder = () => {
                   }} />
               </Space>
           ),
-          width: '100',
+          width: '80',
       },
   ];
   return (
-      <div>
+      <div className='md:translate-x-[0px] translate-x-[-20px]'>
           <Table columns={columns} dataSource={currentOrderUser}  />
       </div>
   )

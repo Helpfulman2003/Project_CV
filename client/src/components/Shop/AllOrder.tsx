@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { currentOrder, rootState } from '../../interface.ts';
 import { FaArrowRight } from "react-icons/fa";
@@ -9,8 +9,13 @@ import { useNavigate } from 'react-router-dom';
 
 const AllOrder = () => {
     const { currentOrder } = useSelector((state: rootState) => state.allOrder.allOrder)
+    const { currentShop} = useSelector((state: rootState)=> state.shop.shop)
+    const order = useMemo(() => {
+        const order = currentOrder && currentOrder.filter((item) => item?._id)
+        return order
+    }, [currentOrder])
     const navigate = useNavigate()
-
+    
     const columns: ColumnsType<currentOrder> = [
         {
             title: 'OrderId',
@@ -18,12 +23,7 @@ const AllOrder = () => {
             key: '_id',
             width: '100',
         },
-        {
-            title: 'Total Price',
-            dataIndex: 'totalPrice',
-            key: 'totalPrice',
-            width: '100',
-        },
+        
         {
             title: 'Status',
             dataIndex: 'status',
@@ -44,8 +44,8 @@ const AllOrder = () => {
         },
     ];
     return (
-        <div>
-            <Table columns={columns} dataSource={currentOrder} style={{ width: '100%' }} scroll={{ x: 900 }} />
+        <div className='w-[90%]'>
+            <Table columns={columns} dataSource={order} style={{ width: '100%' }} scroll={{ x: 900 }} />
         </div>
     )
 }

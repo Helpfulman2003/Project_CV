@@ -90,6 +90,27 @@ const authService = {
       next(error);
     }
   },
+  updateUser: async(body, userId, img, next) => {
+    const user = await User.findById({_id: userId})
+    if(!user) {
+      next(createError(404, 'User id is invalid'))
+    }
+    user.name = body.name
+    user.email = body.email
+    user.phone = body.phone
+    user.address = {
+      city: body.city,
+      address: body.address,
+      zipCode: body.zipCode
+    }
+    user.avatar = {
+      url: img,
+    }
+    await user.save()
+    return {
+      user
+    }
+  }
 };
 
 module.exports = authService;

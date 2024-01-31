@@ -65,14 +65,14 @@ const ShopSizeBar = ({setShow, show}: IProps) => {
 
     ]
     return (
-        <div className='w-[330px] h-screen bg-white shadow-sm p-4 overflow-y-auto'>
+        <div className='lg:w-[330px] w-[80px] h-screen bg-white shadow-sm p-4 overflow-y-auto'>
             <div className='flex flex-col items-start justify-center gap-8'>
                 {
                     info.map((element, index: number) => {
                         return (
                             <div key={index} className={`flex items-center justify-start gap-2 cursor-pointer ${index === show ? 'text-[#49c593]': ''} `} onClick={() => setShow(index)}>
                                 {element.icon}
-                                <span className={`text-[18px] ${index === show ? 'text-[#49c593]': 'text-gray-800'}`}>{element.name}</span>
+                                <span className={`lg:block hidden text-[18px] ${index === show ? 'text-[#49c593]': 'text-gray-800'}`}>{element.name}</span>
                             </div>
                         )
                     })

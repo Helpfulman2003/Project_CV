@@ -50,7 +50,7 @@ const EventCard = ({ event }: IProps) => {
 
     return (
         <>
-            {select && (<div className='bg-white rounded-md shadow-md grid grid-cols-2 overflow-hidden p-2 gap-x-2'>
+            {select && (<div className='bg-white rounded-md shadow-md lg:grid grid-cols-2 overflow-hidden p-2 gap-x-2'>
                 <div>
                     <img src={event.images?.url[0].url} alt="" />
                 </div>

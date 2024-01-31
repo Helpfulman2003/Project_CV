@@ -2,7 +2,7 @@ import React from 'react'
 
 const News = () => {
     return (
-        <div className='w-full px-[10%] mt-[50px]'>
+        <div className='md:block hidden w-full px-[10%] mt-0 md:mt-[50px]'>
             <div className='flex items-center justify-between bg-white shadow-md py-5 px-5 rounded'>
                 <div className='flex items-center justify-between gap-4'>
                     <svg

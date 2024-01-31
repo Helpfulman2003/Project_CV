@@ -11,10 +11,13 @@ import allEventReducer from './allEventSlice.ts'
 import allCouponCodeReducer from "./allCouponCodeSlice.ts";
 import allOrderReducer from './allOrderSlice.ts'
 import allOrderUserReducer from './allOrderUserSlice.ts'
+import allEventOfShopReducer from './allEventOfShopSlice.ts'
+import wishListReducer from './wishListSlice.ts'
 
 const persistConfig = {
   key: 'root',
   storage: storage,
+  // blacklist: ['shop'],
   stateReconciler: autoMergeLevel1,
 };
 
@@ -27,7 +30,9 @@ const reducers = combineReducers<any>({
   allEvent: allEventReducer,
   allCouponCode: allCouponCodeReducer,
   allOrder: allOrderReducer,
-  allOrderUser: allOrderUserReducer
+  allOrderUser: allOrderUserReducer,
+  allEventOfShop: allEventOfShopReducer,
+  wishList: wishListReducer
 });
 
 const _persistedReducer = persistReducer(persistConfig, reducers);

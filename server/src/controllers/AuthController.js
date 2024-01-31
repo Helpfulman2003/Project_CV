@@ -61,6 +61,14 @@ const authController = {
     } catch (error) {
       next(error)
     }
+  },
+  updateUser: async(req, res, next) => {
+    try {
+      const userUpdate = await authService.updateUser(req.body, req.user.userId, req.img, next)
+      return res.json({success: true, message: 'Update success', userUpdate})
+    } catch (error) {
+      next(error)
+    }
   }
 };
 

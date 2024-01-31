@@ -30,9 +30,12 @@ const OrderDetail = () => {
     ]
 
     const getOrder = useMemo(() => {
-        const order = currentOrder.find((item) => item._id === id)
+        const order = currentOrder.find((item) => item?._id === id)
         return order
     }, [id])
+
+    console.log(getOrder);
+
 
     const orderUpdateHandle = async () => {
         try {
@@ -74,7 +77,10 @@ const OrderDetail = () => {
                 })
             }
             <div className='border-solid border-t text-right'>
-                <h2>Total Price: <span className='font-semibold'>{getOrder?.totalPrice}VND</span></h2>
+                <h2>Total Price: <span className='font-semibold'>{getOrder?.cart && getOrder?.cart.reduce((acc, item) => {
+                    let quantity = item.quantity ?? 0
+                    return acc + quantity * item.discountPrice
+                }, 0)}VND</span></h2>
             </div>
             <br />
             <br />

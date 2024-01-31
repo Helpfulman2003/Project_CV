@@ -11,9 +11,9 @@ export interface currentUser {
   phone: number;
   zipCode: number;
   address: {
-    city: string;
-    address: string;
-    zipCode: number;
+    city?: string;
+    address?: string;
+    zipCode?: number;
   };
   avatar: {
     url: { url: string; publicId: string }[];
@@ -48,6 +48,7 @@ export interface currentShop {
   zipCode: number;
   withdrawMethod?: {};
   availableBalancer: number;
+  phone: number;
   transactions: [
     {
       amount?: number;
@@ -116,6 +117,14 @@ export interface currentEvent {
   finishDate: Date;
 }
 
+interface allEventOfShopState {
+  allEventOfShop: {
+    currentEventOfShop: currentEvent[];
+    isFetching: boolean;
+    error: boolean;
+  };
+}
+
 interface allEventState {
   allEvent: {
     currentEvent: currentEvent[];
@@ -126,6 +135,10 @@ interface allEventState {
 
 interface cartState {
   cart: currentProduct[];
+}
+
+interface wishListState {
+  wishList: currentProduct[];
 }
 
 export interface currentCouponCode {
@@ -202,14 +215,24 @@ interface allOrderUserState {
   };
 }
 
+export interface messageState {
+  _id?: string;
+  message: string;
+  user?: [],
+  senderId: string;
+  createdAt?: Date;
+}
+
 export interface rootState {
   user: userState;
   shop: shopState;
   allProductShop: allProductShopState;
   allProduct: allProductState;
   cart: cartState;
+  wishList: wishListState;
   allEvent: allEventState;
   allCouponCode: couponCodeState;
   allOrder: allOrderState;
   allOrderUser: allOrderUserState;
+  allEventOfShop: allEventOfShopState
 }

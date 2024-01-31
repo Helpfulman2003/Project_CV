@@ -5,6 +5,9 @@ const shopRouter = require("./ShopRouter")
 const couponRouter = require("./CouponRouter")
 const paymentRouter = require("./Payment")
 const orderRouter = require("./OrderRouter")
+const messageRouter = require("./MessageRouter")
+const router = require("express").Router()
+const stripe = require('stripe')('sk_test_51OXztXCqeTGxAfHzA7wgm3BqK7JHaTYEej3qYOpop7OFoc7ZxlAHmfnE3YtQXYAnPFv62QfbPU2YM8Q5hIiJP2KK00TroV3GfL');
 
 const routes = (app) => {
     app.use('/api/auth', authRouter)
@@ -14,6 +17,26 @@ const routes = (app) => {
     app.use('/api/coupon', couponRouter)
     app.use('/api/payment', paymentRouter)
     app.use('/api/order', orderRouter)
+    app.use('/api/message', messageRouter)
+    app.use('/payment', router.post('/', async(req, res, next) => {
+        const {amount, id} = req.body
+        try {
+            const payment = await stripe.paymentIntents.create({
+                amount,
+                currency: "USD",
+                description: 'product',
+                payment_method: id,
+                confirm: true
+            })
+            console.log(payment);
+            res.json({
+                message: "Payment successful",
+                success: true
+            })
+        } catch (error) {
+            next(error)
+        }
+    }))
 }
 
 module.exports = routes

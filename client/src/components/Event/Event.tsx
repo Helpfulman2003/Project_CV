@@ -7,7 +7,7 @@ const Event = () => {
   const {currentEvent} = useSelector((state: rootState) => state.allEvent.allEvent)
   return (
     <div className='px-[10%] w-full mt-10 text-[#333]'>
-        <h1 className='text-[28px] font-bold mb-4'>Popular Events</h1>
+        <h1 className='md:text-left text-center text-[28px] font-bold mb-4'>Popular Events</h1>
         {
           currentEvent.map((item, index:number) => {
             return (

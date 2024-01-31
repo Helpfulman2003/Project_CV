@@ -6,7 +6,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const routes = require('./routers');
 const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 3001;
 
 app.use(cookieParser());
 app.use(express.json({ limit: "50mb" }));
@@ -19,8 +19,6 @@ app.use(
 );
 
 routes(app)
-
-
 
 const URL = process.env.MONGODB;
 
@@ -47,6 +45,31 @@ app.use((error, req, res, next) => {
   });
 });
 
-app.listen(port, () => {
+
+const server = require('http').createServer(app);
+const io = require('socket.io')(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    credentials: true,
+  },
+});
+
+let onlineUser = {}
+
+io.on('connection', (socket) => {
+  console.log('A user connected: ' + socket.id);
+  socket.on('add-user', (data) => {
+    onlineUser[data] = socket.id;
+  });
+  socket.on('sendMessage', (data) => {
+    const {from, to, message} = data
+    if(onlineUser[to]) {
+      io.to(onlineUser[to]).emit('message-receive', {to, message})
+    }
+  })
+});
+
+
+server.listen(port, () => {
   console.log("Server is running on port:", port);
 });

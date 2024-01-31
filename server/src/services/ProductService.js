@@ -23,7 +23,7 @@ const productService = {
     };
   },
   getAllProductOfShop: async (shopId, next) => {
-    const products = await Product.find({ shopId: { $eq: shopId } });
+    const products = await Product.find({ shopId: { $eq: shopId } }).populate("shopId");
     return {
       products,
     };
