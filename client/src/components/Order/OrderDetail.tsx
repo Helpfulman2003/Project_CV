@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { IoBagHandleOutline } from "react-icons/io5";
 import { useNavigate, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,6 +18,12 @@ const OrderDetail = () => {
     const [status, setStatus] = useState('')
     const dispatch = useDispatch()
     const navigate = useNavigate()
+
+    useEffect(() => {
+        if(!currentShop._id ) {
+          navigate('/shop-login')
+        }
+      }, [])
 
     const axiosJWT = createAxios(currentShop, dispatch, loginSuccess)
 

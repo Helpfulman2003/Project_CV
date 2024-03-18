@@ -19,7 +19,7 @@ const ProfileContentOrder = () => {
           key: '_id',
           width: '100',
           render: (_id: string) => {
-            return _id.substring(0, 10)+'...'
+            return _id?.substring(0, 10)+'...'
           }
       },
       {

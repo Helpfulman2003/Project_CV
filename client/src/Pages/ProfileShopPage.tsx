@@ -1,12 +1,21 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import HeaderShop from '../components/Header/HeaderShop.tsx'
 import ProfileShopInfo from '../components/ProfileShop/ProfileShopInfo.tsx'
 import ProfileShopContent from '../components/ProfileShop/ProfileShopContent.tsx'
 import { useSelector } from 'react-redux'
 import { rootState } from '../interface.ts'
+import { useNavigate } from 'react-router-dom'
 
 const ProfileShopPage = () => {
   const {currentShop} = useSelector((state: rootState) => state.shop.shop)
+  const navigate =  useNavigate()
+  
+  useEffect(() => {
+    if(!currentShop._id ) {
+      navigate('/shop-login')
+    }
+  }, [])
+
   return (
     <div>
         <HeaderShop/>

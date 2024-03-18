@@ -24,6 +24,12 @@ const ShopPage = () => {
   const axiosJWT = createAxios(currentShop, dispatch, loginSuccess)
   const navigate = useNavigate()
 
+  useEffect(() => {
+    if(!currentShop._id ) {
+      navigate('/shop-login')
+    }
+  }, [])
+
   // useEffect(() => {
   //   const checkToken = async () => {
   //     if (currentShop._id === undefined) {

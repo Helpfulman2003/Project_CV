@@ -29,6 +29,9 @@ const ShopContent = ({ show }: IProps) => {
   }, [currentOrder])
   const navigate = useNavigate()
 
+  console.log(currentShop.availableBalancer);
+  
+
   const columns: ColumnsType<currentOrder> = [
     {
       title: 'OrderId',

@@ -5,6 +5,7 @@ const middleware = require("../middleware/middleware")
 
 const paymentRouter = require("express").Router()
 
+paymentRouter.post('/success', paymentController.success)
 paymentRouter.post('/payment', paymentController.create)
 
 module.exports = paymentRouter

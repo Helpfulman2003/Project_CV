@@ -25,3 +25,5 @@ export const updateOrderStatus: string = 'http://localhost:3001/api/order/update
 export const addMessageRoute: string = 'http://localhost:3001/api/message/add-message'
 export const getAllMessageRoute: string = 'http://localhost:3001/api/message/get-all-message'
 export const getAllUserRoute: string = 'http://localhost:3001/api/message/get-all-user'
+export const paymentByPaypal: string = 'http://localhost:3001/api/pay/payment'
+export const paymentExecute: string = 'http://localhost:3001/api/pay/success'

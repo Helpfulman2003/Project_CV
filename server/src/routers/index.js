@@ -18,25 +18,28 @@ const routes = (app) => {
     app.use('/api/payment', paymentRouter)
     app.use('/api/order', orderRouter)
     app.use('/api/message', messageRouter)
-    app.use('/payment', router.post('/', async(req, res, next) => {
-        const {amount, id} = req.body
-        try {
-            const payment = await stripe.paymentIntents.create({
-                amount,
-                currency: "USD",
-                description: 'product',
-                payment_method: id,
-                confirm: true
-            })
-            console.log(payment);
-            res.json({
-                message: "Payment successful",
-                success: true
-            })
-        } catch (error) {
-            next(error)
-        }
-    }))
+    app.use('/api/pay', paymentRouter)
+    // app.use('/payment', router.post('/', async(req, res, next) => {
+    //     const {amount, id} = req.body
+    //     try {
+    //       const payment = await stripe.paymentIntents.create({
+    //         amount: amount*100/100,
+    //         currency: "USD",
+    //         description: 'product',
+    //         payment_method: id,
+    //         confirm: true,
+    //         return_url: 'http://your-return-url.com' // Add your return URL here
+    //       })
+    //       console.log(payment);
+    //       res.json({
+    //         message: "Payment successful",
+    //         success: true
+    //       })
+    //     } catch (error) {
+    //       next(error)
+    //     }
+    //   }))
+      
 }
 
 module.exports = routes

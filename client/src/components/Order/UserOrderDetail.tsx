@@ -42,7 +42,7 @@ const UserOrderDetail = () => {
     })
 
     const getOrder = useMemo(() => {
-        const order = currentOrderUser.find((item) => item._id === id)
+        const order = currentOrderUser.find((item) => item?._id === id)
         return order
     }, [id])
 

@@ -58,7 +58,8 @@ const shopController = {
   logout: async (req, res, next) => {
     try {
       //xóa token jwt ra khỏi redis
-      await client.del(`refreshToken:${req.shop.shopId}`, 'shop')
+      await client.del(`refreshToken:${req.shop.shopId}`)
+      await client.del('shop')
       res.json({
         status: "OK",
         message: "Logged out!",

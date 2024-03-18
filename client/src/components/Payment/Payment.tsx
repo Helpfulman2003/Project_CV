@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { currentProduct, currentUser, rootState } from '../../interface'
+import { currentProduct, currentUser, rootState } from '../../interface.ts'
 import { RxCross1 } from 'react-icons/rx'
 import axios from 'axios';
-import { createNewOrder } from '../../router/userRouter.ts'
+import { createNewOrder, paymentByPaypal, paymentExecute } from '../../router/userRouter.ts'
 import { useNavigate } from 'react-router-dom'
 import { toast, ToastContainer } from 'react-toastify'
 import { clearCart } from '../../redux/cartSlice.ts'
-import { CardNumberElement, CardCvcElement, CardExpiryElement, Elements, useStripe, useElements } from '@stripe/react-stripe-js'
+import { Elements, useStripe, useElements, CardElement } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js';
 
 interface orderData {
@@ -40,9 +40,12 @@ const Payment = () => {
   const [select, setSelect] = useState<number>(0)
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  // const stripe = useStripe()
-  // const elements = useElements()
 
+  useEffect(() => {
+    if(!currentUser._id ) {
+      navigate('/login')
+    }
+  }, [])
 
   useEffect(() => {
     const latestOrder = localStorage.getItem('latestOrder')
@@ -74,7 +77,7 @@ const Payment = () => {
 
     try {
       const { data } = await axios.post(createNewOrder, order)
-      navigate("/order/success");
+      navigate("/order/success")
       dispatch(clearCart())
       localStorage.setItem('latestOrder', JSON.stringify(''))
     } catch (error) {
@@ -82,52 +85,31 @@ const Payment = () => {
     }
   }
 
-  // const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-  //   event.preventDefault()
-  //   const cardElement = elements?.getElement(CardNumberElement);
-  //   if (!cardElement) {
-  //     return;
-  //   }
-  //   const { error, paymentMethod } = await stripe!.createPaymentMethod({
-  //     type: 'card',
-  //     card: cardElement,
-  //   });
-  //   if (!error) {
-  //     try {
-  //       const { id } = paymentMethod
-  //       const response = await axios.post("'http://localhost:3001/payment", {
-  //         amount: orderData?.totalPrice,
-  //         id
-  //       })
+  const handlePaymentWithPaypal = async() => {
+    const order = {
+      cart: groupByShop(orderData?.cart),
+      shippingAddress: orderData?.shippingAddress,
+      user: orderData?.user,
+      totalPrice: orderData?.totalPrice,
+      paymentInfo: {
+        type: "Cash On Delivery",
+      }
+    }
 
-  //       if (response.data.success) {
-  //         const order = {
-  //           cart: groupByShop(orderData?.cart),
-  //           shippingAddress: orderData?.shippingAddress,
-  //           user: orderData?.user,
-  //           totalPrice: orderData?.totalPrice,
-  //           paymentInfo: {
-  //             id: id,
-  //             // status: status,
-  //             type: "Credit Card",
-  //           }
-  //         };
-  //         try {
-  //           const { data } = await axios.post(createNewOrder, order)
-  //           navigate("/order/success");
-  //           dispatch(clearCart())
-  //           localStorage.setItem('latestOrder', JSON.stringify(''))
-  //         } catch (error) {
-  //           toast.error('Order error')
-  //         }
-  //       }
-  //     } catch (error) {
-  //       console.log("Error", error)
-  //     }
-  //   } else {
-  //     console.log(error.message)
-  //   }
-  // }
+    try {
+      const config = {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
+        }
+      };
+      const { data } = await axios.post(paymentByPaypal, order, config);
+      window.location.href = data.link
+    } catch (error) {
+      toast.error('Order error')
+    }
+
+  }
 
   return (
     <>
@@ -149,95 +131,13 @@ const Payment = () => {
             </div>
 
             {/* pay with card */}
-            {select === 1 ? (
-              <div className="w-full flex border-b">
-                <form className="w-full" /*onSubmit={handleSubmit}*/>
-                  <Elements stripe={stripeTestPromise}>
-                    <div className="w-full flex pb-3">
-                      <div className="w-[50%]">
-                        <label className="block pb-2">Name On Card</label>
-                        <input
-                          required
-                          placeholder={currentUser && currentUser.name}
-                          value={currentUser && currentUser.name}
-                        />
-                      </div>
-                      <div className="w-[50%]">
-                        <label className="block pb-2">Exp Date</label>
-                        <CardExpiryElement
-                          className={`border p-1 rounded-[5px]`}
-                          options={{
-                            style: {
-                              base: {
-                                fontSize: "16px",
-                                color: "#444",
-                              },
-                              empty: {
-                                color: "#3a120a",
-                                backgroundColor: "transparent",
-                                "::placeholder": {
-                                  color: "#444",
-                                },
-                              },
-                            },
-                          }}
-                        />
-                      </div>
-                    </div>
+            {select === 1 && (
 
-                    <div className="w-full flex pb-3">
-                      <div className="w-[50%]">
-                        <label className="block pb-2">Card Number</label>
-                        <CardNumberElement
-                          className={`!h-[35px] !w-[95%] border p-1 rounded-[5px]`}
-                          options={{
-                            style: {
-                              base: {
-                                fontSize: "16px",
-                                color: "#444",
-                              },
-                              empty: {
-                                color: "#3a120a",
-                                backgroundColor: "transparent",
-                                "::placeholder": {
-                                  color: "#444",
-                                },
-                              },
-                            },
-                          }}
-                        />
-                      </div>
-                      <div className="w-[50%]">
-                        <label className="block pb-2">CVV</label>
-                        <CardCvcElement
-                          className={`!h-[35px] border p-1 rounded-[5px]`}
-                          options={{
-                            style: {
-                              base: {
-                                fontSize: "19px",
-                                color: "#444",
-                              },
-                              empty: {
-                                color: "#3a120a",
-                                backgroundColor: "transparent",
-                                "::placeholder": {
-                                  color: "#444",
-                                },
-                              },
-                            },
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </Elements>
-                  <input
-                    type="submit"
-                    value="Submit"
-                    className={`w-[120px] shadow text-center px-3 py-2 mb-2 rounded-md bg-[#f63b60] text-[#fff] cursor-pointer text-[18px] font-[600]`}
-                  />
-                </form>
-              </div>
-            ) : null}
+              <Elements stripe={stripeTestPromise}>
+                <FormPaymentStripe currentUser={currentUser} orderData={orderData}/>
+              </Elements>
+
+            )}
           </div>
 
           <br />
@@ -257,12 +157,12 @@ const Payment = () => {
               </h4>
             </div>
 
-            {/* pay with payement */}
+            {/* pay with payment */}
             {select === 2 ? (
               <div className="w-full flex border-b">
                 <div
                   className={`w-[120px] shadow text-center px-3 py-2 mb-2 rounded-md bg-[#f63b60] text-[#fff] cursor-pointer text-[18px] font-[600]`}
-                  onClick={() => setOpen(true)}
+                  onClick={handlePaymentWithPaypal}
                 >
                   Pay Now
                 </div>
@@ -352,3 +252,96 @@ const Payment = () => {
 }
 
 export default Payment
+
+
+const FormPaymentStripe = ({ currentUser,orderData }) => {
+  const stripe = useStripe()
+  const elements = useElements()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  const groupByShop = (cart) => {
+    return cart && cart.reduce((groupedItems, item) => {
+      const shopId = item.shopId._id;
+      if (!groupedItems[shopId]) {
+        groupedItems[shopId] = [];
+      }
+      groupedItems[shopId].push(item);
+      return groupedItems;
+    }, {});
+  }
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const cardElement = elements?.getElement(CardElement);
+    if (!cardElement || !stripe) {
+      return;
+    }
+    const { error, paymentMethod } = await stripe.createPaymentMethod({
+      type: 'card',
+      card: cardElement,
+    });
+    if (!error) {
+      try {
+        const { id } = paymentMethod
+        const response = await axios.post("http://localhost:3001/payment", {
+          amount: orderData?.totalPrice,
+          id
+        })
+
+        if (response.data.success) {
+          const order = {
+            cart: groupByShop(orderData?.cart),
+            shippingAddress: orderData?.shippingAddress,
+            user: orderData?.user,
+            totalPrice: Math.round(orderData?.totalPrice * 100), // Convert to cents for Stripe
+            paymentInfo: {
+              id: id,
+              // status: status,
+              type: "Credit Card",
+            }
+          };          
+          try {
+            const { data } = await axios.post(createNewOrder, order)
+            navigate("/order/success");
+            dispatch(clearCart())
+            localStorage.setItem('latestOrder', JSON.stringify(''))
+          } catch (error) {
+            toast.error('Order error')
+          }
+        }
+      } catch (error) {
+        console.log("Error", error)
+      }
+    } else {
+      console.log(error.message)
+    }
+  }
+  return (
+    <div className="w-full flex border-b">
+      <form className="w-full" onSubmit={handleSubmit}>
+        <div className="w-full flex pb-3">
+          <div className="w-[50%]">
+            <label className="block pb-2">Name On Card</label>
+            <input
+              required
+              placeholder={currentUser && currentUser.name}
+              value={currentUser && currentUser.name}
+            />
+          </div>
+          <div className="w-[50%]">
+            <label className="block pb-2">Exp Date</label>
+            <CardElement
+              className={`border p-1 rounded-[5px]`}
+            />
+          </div>
+        </div>
+        <input
+          type="submit"
+          value="Submit"
+          className={`w-[120px] shadow text-center px-3 py-2 mb-2 rounded-md bg-[#f63b60] text-[#fff] cursor-pointer text-[18px] font-[600]`}
+        />
+      </form>
+    </div>
+  )
+}

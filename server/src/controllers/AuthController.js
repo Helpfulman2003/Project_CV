@@ -54,6 +54,7 @@ const authController = {
     try {
       //xóa token jwt ra khỏi redis
       await client.del(`refreshToken:${req.user.userId}`, 'user')
+      await client.del('user')
       res.json({
         status: "OK",
         message: "Logged out!",

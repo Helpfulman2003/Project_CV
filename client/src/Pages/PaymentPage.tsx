@@ -7,7 +7,7 @@ import Payment from '../components/Payment/Payment.tsx'
 const PaymentPage = () => {
   return (
     <div>
-        <Header/>
+        {/* <Header/> */}
         <div className='px-[10%] w-full mb-[120px]'>
             <CheckOutStep active={2}/>
             <Payment/>

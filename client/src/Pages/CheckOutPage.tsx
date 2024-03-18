@@ -7,7 +7,7 @@ import CheckOutStep from '../components/CheckOut/CheckOutStep.tsx'
 const CheckOutPage = () => {
   return (
     <div>
-        <Header/>
+        {/* <Header/> */}
         <div className='px-[10%] w-full mb-[120px]'>
             <CheckOutStep active={1}/>
             <CheckOut/>

@@ -21,6 +21,7 @@
     "multer": "^1.4.5-lts.1",
     "multer-storage-cloudinary": "^4.0.0",
     "nodemon": "^3.0.2",
+    "paypal-rest-sdk": "^1.8.1",
     "redis": "^4.6.12",
     "socket.io": "^4.7.4",
     "stripe": "^14.13.0"

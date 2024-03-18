@@ -96,7 +96,7 @@ const ProductDetailInfo = ({ getProduct }: IProps) => {
                 </div>
                 <div>
                   <p className='text-[#6cb0fb]'>{getProduct?.shopId?.name}</p>
-                  <p>({4}) rating</p>
+                  <p>({getProduct?.shopId?.ratings ?? 0}) rating</p>
                 </div>
               </div>
               <p className='text-gray-800 mt-2'>{getProduct.shopId?.description}</p>
